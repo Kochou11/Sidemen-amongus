@@ -1974,23 +1974,23 @@
        
         ];
 
-        // Filter players based on search input
+        // search
 document.getElementById("playerSearch").addEventListener("input", function () {
     const query = this.value.toLowerCase();
 
-    // Filter player data based on the search query
+    // Filter player data
     const filteredPlayers = playerData.filter(player =>
         player.Name.toLowerCase().includes(query)
     );
 
-    // Render the filtered players
+    // filtered players
     renderPlayers(filteredPlayers);
 });
 
-// Function to render players
+
 function renderPlayers(players) {
     const grid = document.getElementById("playersGrid");
-    grid.innerHTML = ""; // Clear the grid before rendering
+    grid.innerHTML = ""; // Clear the grid 
 players.forEach(player => {
                 const card = document.createElement('div');
                 card.className = 'player-card fade-in';
@@ -2040,7 +2040,7 @@ players.forEach(player => {
     });
 }
 
-// Initial render of all players
+// Initial render 
 renderPlayers(playerData);
 
         function showPlayerDetails(player) {
