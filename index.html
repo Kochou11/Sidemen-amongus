@@ -1974,24 +1974,25 @@
        
         ];
 
-        // search
-document.getElementById("playerSearch").addEventListener("input", function () {
-    const query = this.value.toLowerCase();
+                // search
+        document.getElementById("playerSearch").addEventListener("input", function() {
+          const query = this.value.toLowerCase();
 
-    // Filter player data
-    const filteredPlayers = playerData.filter(player =>
-        player.Name.toLowerCase().includes(query)
-    );
+          // Filter player data
+          const filteredPlayers = playerData.filter(player =>
+            player.Name.toLowerCase().includes(query)
+          );
 
-    // filtered players
-    renderPlayers(filteredPlayers);
-});
+          // filtered players
+          renderPlayers(filteredPlayers);
+        });
 
 
-function renderPlayers(players) {
-    const grid = document.getElementById("playersGrid");
-    grid.innerHTML = ""; // Clear the grid 
-players.forEach(player => {
+        function renderPlayers(players) {
+          const grid = document.getElementById("playersGrid");
+          grid.innerHTML = ""; // Clear the grid
+            
+            players.forEach(player => {
                 const card = document.createElement('div');
                 card.className = 'player-card fade-in';
                 card.onclick = () => showPlayerDetails(player);
@@ -2035,13 +2036,9 @@ players.forEach(player => {
                     </div>
                 `;
                 
-    
-        grid.appendChild(card);
-    });
-}
-
-// Initial render 
-renderPlayers(playerData);
+                grid.appendChild(card);
+            });
+        }
 
         function showPlayerDetails(player) {
             const modal = document.getElementById('playerModal');
