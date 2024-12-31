@@ -222,6 +222,17 @@
             <h1>MoreSidemen Among Us Stats</h1>
             <p>Click on a player to see detailed statistics</p>
         </header>
+<div class="search-box" style="margin-bottom: 2rem; text-align: center;">
+    <div style="display: inline-flex; align-items: center; background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 1rem; width: 80%; max-width: 400px;">
+        <i class='bx bx-search' style="color: var(--text-secondary); font-size: 1.5rem; margin-right: 0.5rem;"></i>
+        <input 
+            type="text" 
+            id="playerSearch" 
+            placeholder="Search for a player..." 
+            style="flex: 1; background: none; border: none; color: var(--text); outline: none; font-size: 1rem;"
+        >
+    </div>
+</div>
 
         <div class="players-grid" id="playersGrid"></div>
     </div>
@@ -1963,10 +1974,24 @@
        
         ];
 
-        function renderPlayers(players) {
-            const grid = document.getElementById('playersGrid');
-            
-            players.forEach(player => {
+        // Filter players based on search input
+document.getElementById("playerSearch").addEventListener("input", function () {
+    const query = this.value.toLowerCase();
+
+    // Filter player data based on the search query
+    const filteredPlayers = playerData.filter(player =>
+        player.Name.toLowerCase().includes(query)
+    );
+
+    // Render the filtered players
+    renderPlayers(filteredPlayers);
+});
+
+// Function to render players
+function renderPlayers(players) {
+    const grid = document.getElementById("playersGrid");
+    grid.innerHTML = ""; // Clear the grid before rendering
+players.forEach(player => {
                 const card = document.createElement('div');
                 card.className = 'player-card fade-in';
                 card.onclick = () => showPlayerDetails(player);
@@ -2010,9 +2035,13 @@
                     </div>
                 `;
                 
-                grid.appendChild(card);
-            });
-        }
+    
+        grid.appendChild(card);
+    });
+}
+
+// Initial render of all players
+renderPlayers(playerData);
 
         function showPlayerDetails(player) {
             const modal = document.getElementById('playerModal');
@@ -2145,4 +2174,21 @@ document.querySelectorAll('.player-card').forEach(card => {
 });
 </script> 
 </body> 
+<footer style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 0.875rem;">
+    <p>Based on data from the 
+        <a href="https://docs.google.com/spreadsheets/u/0/d/1g3Esmr1-Z5jt5_mqOv9-f9fvyFezgT_2Z-8G7w5ChSU/htmlview#" target="_blank" style="color: var(--primary); text-decoration: none;">
+            MoreSidemen Stats Spreadsheet
+        </a> by 
+        <a href="https://www.reddit.com/user/thekesh12/" target="_blank" style="color: var(--primary); text-decoration: none;">kesh</a>.
+    </p>
+    <div style="margin-top: 1rem;">
+        <a href="https://github.com/Kochou11/Sidemen-amongus/tree/main?tab=readme-ov-file" target="_blank" style="margin-right: 1rem; color: var(--text);">
+            <i class='bx bxl-github bx-md'></i>
+        </a>
+        <a href="#" target="_blank" style="color: var(--text);">
+            <i class='bx bxl-discord bx-md'></i>
+        </a>
+    </div>
+</footer>
+
 </html>
