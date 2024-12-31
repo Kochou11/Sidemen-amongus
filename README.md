@@ -52,4 +52,4 @@ This project provides a visually appealing interface for viewing and analyzing s
 ## Credits
 
 - Based on the data from the spreadsheet [MoreSidemen Among Us Stats](https://docs.google.com/spreadsheets/u/0/d/1g3Esmr1-Z5jt5_mqOv9-f9fvyFezgT_2Z-8G7w5ChSU/htmlview#) by [kesh](https://www.reddit.com/user/thekesh12/?utm_source=share&utm_medium=mweb3x&utm_name=mweb3xcss&utm_term=1&utm_content=share_button).
-- Inspired by the Sidemen group's gaming sessions.
+  
