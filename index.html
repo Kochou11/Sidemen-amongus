@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoreSidemen Among Us Stats</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        :root {
+            --primary: #FF4154;
+            --secondary: #7928CA;
+            --background: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --text: #FFFFFF;
+            --text-secondary: #A0A0A0;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .player-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .player-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .player-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            
+        }
+.player-avatar img {
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+        .player-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .stats-detail {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .kill-stats {
+            margin-top: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            width: 0;
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 0.5rem;
+        }
+
+        .role-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .role-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .role-title i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>MoreSidemen Among Us Stats</h1>
+            <p>Click on a player to see detailed statistics</p>
+        </header>
+
+        <div class="players-grid" id="playersGrid"></div>
+    </div>
+
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <button class="close-btn"><i class='bx bx-x'></i></button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data based on the Excel file
+        const playerData = [
+            {
+                "Name": "Ethan",
+                "Games Played": 268,
+                "Wins": 119,
+                "Losses": 150,
+                "Win %": 44.4,
+                "Kills": 131,
+                "Deaths": 139,
+                "KDR": 0.94,
+                "Kills as Imposter": 123,
+                "Kills Per Imposter Game": 2.32,
+                "Imposter Games": 53,
+                "Imposter Wins": 24,
+                "Imposter Win %": 45.28,
+                "Crewmate Games": 203,
+                "Crewmate Wins": 90,
+                "Crewmate Win %": 44.33,
+                "Total Tasks": 858,
+                "Tasks Completed": 570,
+                "Task Completion %": 66.43,
+                "Bodies Reported": 63,
+                "Emergency Meetings": 18,
+                "avatar": "pics/ethan.jpg"
+
+            },
+            {
+                "Name": "Simon",
+                "Games Played": 267,
+                "Wins": 151,
+                "Losses": 116,
+                "Win %": 56.55,
+                "Kills": 120,
+                "Deaths": 125,
+                "KDR": 0.96,
+                "Kills as Imposter": 112,
+                "Kills Per Imposter Game": 2.6,
+                "Imposter Games": 43,
+                "Imposter Wins": 33,
+                "Imposter Win %": 76.74,
+                "Crewmate Games": 209,
+                "Crewmate Wins": 113,
+                "Crewmate Win %": 54.07,
+                "Total Tasks": 902,
+                "Tasks Completed": 527,
+                "Task Completion %": 58.43,
+                "Bodies Reported": 91,
+                "Emergency Meetings": 38,
+                "avatar": "pics/simon.jpg"
+
+            },
+          
+                   {
+            "Name": "Josh",
+            "Games Played": 265,
+            "Wins": 113,
+            "Losses": 152,
+            "Win %": 42.64,
+            "Kills": 112,
+            "Deaths": 119,
+            "KDR": 0.94,
+            "Kills as Imposter": 107,
+            "Kills Per Imposter Game": 1.81,
+            "Imposter Games": 59,
+            "Imposter Wins": 25,
+            "Imposter Win %": 42.37,
+            "Crewmate Games": 196,
+            "Crewmate Wins": 87,
+            "Crewmate Win %": 44.39,
+            "Neutral Games": 10,
+            "Neutral Wins": 1,
+            "Neutral Win %": 10.0,
+            "Lover Games": 2,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 857.0,
+            "Tasks Completed": 490.0,
+            "Task Completion %": 57.18,
+            "All Tasks Completed": 19.0,
+            "Voted out": 57,
+            "Emergency Meetings": 23,
+            "Bodies Reported": 60,
+            "Voted out First": 19,
+            "First Death of Game": 30,
+            "Death in First Round": 32,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/josh.jpg"
+
+        },
+        {
+            "Name": "Tobi",
+            "Games Played": 255,
+            "Wins": 113,
+            "Losses": 142,
+            "Win %": 44.31,
+            "Kills": 107,
+            "Deaths": 112,
+            "KDR": 0.96,
+            "Kills as Imposter": 96,
+            "Kills Per Imposter Game": 1.96,
+            "Imposter Games": 49,
+            "Imposter Wins": 18,
+            "Imposter Win %": 36.73,
+            "Crewmate Games": 196,
+            "Crewmate Wins": 93,
+            "Crewmate Win %": 47.45,
+            "Neutral Games": 10,
+            "Neutral Wins": 2,
+            "Neutral Win %": 20.0,
+            "Lover Games": 1,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 768.0,
+            "Tasks Completed": 569.0,
+            "Task Completion %": 74.09,
+            "All Tasks Completed": 48.0,
+            "Voted out": 51,
+            "Emergency Meetings": 17,
+            "Bodies Reported": 61,
+            "Voted out First": 23,
+            "First Death of Game": 22,
+            "Death in First Round": 31,
+            "Disconnected": 0,
+            "Rage Quit": 1,
+            "avatar": "pics/tobi.gif"
+
+        },
+        {
+            "Name": "Vik",
+            "Games Played": 254,
+            "Wins": 134,
+            "Losses": 120,
+            "Win %": 52.76,
+            "Kills": 114,
+            "Deaths": 114,
+            "KDR": 1.0,
+            "Kills as Imposter": 112,
+            "Kills Per Imposter Game": 2.2,
+            "Imposter Games": 51,
+            "Imposter Wins": 33,
+            "Imposter Win %": 64.71,
+            "Crewmate Games": 196,
+            "Crewmate Wins": 98,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 7,
+            "Neutral Wins": 3,
+            "Neutral Win %": 42.86,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 817.0,
+            "Tasks Completed": 224.0,
+            "Task Completion %": 27.42,
+            "All Tasks Completed": 10.0,
+            "Voted out": 38,
+            "Emergency Meetings": 28,
+            "Bodies Reported": 67,
+            "Voted out First": 17,
+            "First Death of Game": 23,
+            "Death in First Round": 25,
+            "Disconnected": 1,
+            "Rage Quit": 1,
+            "avatar": "pics/vik.jpg"
+
+        },
+        {
+            "Name": "Harry",
+            "Games Played": 247,
+            "Wins": 116,
+            "Losses": 131,
+            "Win %": 46.96,
+            "Kills": 85,
+            "Deaths": 118,
+            "KDR": 0.72,
+            "Kills as Imposter": 79,
+            "Kills Per Imposter Game": 1.93,
+            "Imposter Games": 41,
+            "Imposter Wins": 19,
+            "Imposter Win %": 46.34,
+            "Crewmate Games": 193,
+            "Crewmate Wins": 94,
+            "Crewmate Win %": 48.7,
+            "Neutral Games": 13,
+            "Neutral Wins": 3,
+            "Neutral Win %": 23.08,
+            "Lover Games": 1,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 816.0,
+            "Tasks Completed": 379.0,
+            "Task Completion %": 46.45,
+            "All Tasks Completed": 19.0,
+            "Voted out": 40,
+            "Emergency Meetings": 17,
+            "Bodies Reported": 62,
+            "Voted out First": 22,
+            "First Death of Game": 20,
+            "Death in First Round": 27,
+            "Disconnected": 1,
+            "Rage Quit": 1,
+            "avatar": "pics/harry.jpg"
+
+        },
+        {
+  "Name": "JJ",
+  "Games Played": 231,
+  "Wins": 101,
+  "Losses": 130,
+  "Win %": 43.72,
+  "Kills": 144,
+  "Deaths": 92,
+  "KDR": 1.57,
+  "Kills as Imposter": 119,
+  "Kills Per Imposter Game": 1.98,
+  "Imposter Games": 60,
+  "Imposter Wins": 27,
+  "Imposter Win %": 45.0,
+  "Crewmate Games": 156,
+  "Crewmate Wins": 72,
+  "Crewmate Win %": 46.15,
+  "Neutral Games": 15,
+  "Neutral Wins": 2,
+  "Neutral Win %": 13.33,
+  "Lover Games": 3,
+  "Lover Wins": 0,
+  "Lover Win %": 0,
+  "Total Tasks": 613.0,
+  "Tasks Completed": 135.0,
+  "Task Completion %": 22.02,
+  "All Tasks Completed": 6.0,
+  "Voted out": 75,
+  "Emergency Meetings": 52,
+  "Bodies Reported": 27,
+  "Voted out First": 50,
+  "First Death of Game": 20,
+  "Death in First Round": 31,
+  "Disconnected": 3,
+  "Rage Quit": 0,
+  "avatar": "pics/jj.jpg"
+
+},
+{
+  "Name": "Lazarbeam",
+  "Games Played": 155,
+  "Wins": 75,
+  "Losses": 80,
+  "Win %": 48.39,
+  "Kills": 78,
+  "Deaths": 66,
+  "KDR": 1.18,
+  "Kills as Imposter": 68,
+  "Kills Per Imposter Game": 2.19,
+  "Imposter Games": 31,
+  "Imposter Wins": 19,
+  "Imposter Win %": 61.29,
+  "Crewmate Games": 119,
+  "Crewmate Wins": 54,
+  "Crewmate Win %": 45.38,
+  "Neutral Games": 5,
+  "Neutral Wins": 2,
+  "Neutral Win %": 40.0,
+  "Lover Games": 0,
+  "Lover Wins": 0,
+  "Lover Win %": 0,
+  "Total Tasks": 706.0,
+  "Tasks Completed": 198.0,
+  "Task Completion %": 28.05,
+  "All Tasks Completed": 4.0,
+  "Voted out": 28,
+  "Emergency Meetings": 17,
+  "Bodies Reported": 42,
+  "Voted out First": 8,
+  "First Death of Game": 14,
+  "Death in First Round": 15,
+  "Disconnected": 0,
+  "Rage Quit": 0,
+  "avatar": "pics/lazarbeam.jpg"
+
+},
+{
+  "Name": "Randolph",
+  "Games Played": 146,
+  "Wins": 51,
+  "Losses": 95,
+  "Win %": 34.93,
+  "Kills": 59,
+  "Deaths": 70,
+  "KDR": 0.84,
+  "Kills as Imposter": 58,
+  "Kills Per Imposter Game": 2.07,
+  "Imposter Games": 28,
+  "Imposter Wins": 8,
+  "Imposter Win %": 28.57,
+  "Crewmate Games": 113,
+  "Crewmate Wins": 42,
+  "Crewmate Win %": 37.17,
+  "Neutral Games": 5,
+  "Neutral Wins": 1,
+  "Neutral Win %": 20.0,
+  "Lover Games": 0,
+  "Lover Wins": 0,
+  "Lover Win %": 0,
+  "Total Tasks": 476.0,
+  "Tasks Completed": 231.0,
+  "Task Completion %": 48.53,
+  "All Tasks Completed": 11.0,
+  "Voted out": 32,
+  "Emergency Meetings": 11,
+  "Bodies Reported": 32,
+  "Voted out First": 11,
+  "First Death of Game": 15,
+  "Death in First Round": 18,
+  "Disconnected": 0,
+  "Rage Quit": 0,
+  "avatar": "pics/randolph.jpg"
+
+},
+{
+  "Name": "Deji",
+  "Games Played": 132,
+  "Wins": 55,
+  "Losses": 77,
+  "Win %": 41.67,
+  "Kills": 59,
+  "Deaths": 49,
+  "KDR": 1.2,
+  "Kills as Imposter": 51,
+  "Kills Per Imposter Game": 1.96,
+  "Imposter Games": 26,
+  "Imposter Wins": 8,
+  "Imposter Win %": 30.77,
+  "Crewmate Games": 97,
+  "Crewmate Wins": 45,
+  "Crewmate Win %": 46.39,
+  "Neutral Games": 9,
+  "Neutral Wins": 2,
+  "Neutral Win %": 22.22,
+  "Lover Games": 1,
+  "Lover Wins": 0,
+  "Lover Win %": 0,
+  "Total Tasks": 696.0,
+  "Tasks Completed": 152.0,
+  "Task Completion %": 21.84,
+  "All Tasks Completed": 8.0,
+  "Voted out": 42,
+  "Emergency Meetings": 21,
+  "Bodies Reported": 18,
+  "Voted out First": 29,
+  "First Death of Game": 16,
+  "Death in First Round": 16,
+  "Disconnected": 1,
+  "Rage Quit": 0,
+  "avatar": "pics/deji.jpg"
+
+},
+{
+  "Name": "Viz",
+  "Games Played": 120,
+  "Wins": 58,
+  "Losses": 62,
+  "Win %": 48.33,
+  "Kills": 48,
+  "Deaths": 61,
+  "KDR": 0.79,
+  "Kills as Imposter": 47,
+  "Kills Per Imposter Game": 2.35,
+  "Imposter Games": 20,
+  "Imposter Wins": 10,
+  "Imposter Win %": 50.0,
+  "Crewmate Games": 94,
+  "Crewmate Wins": 47,
+  "Crewmate Win %": 50.0,
+  "Neutral Games": 6,
+  "Neutral Wins": 1,
+  "Neutral Win %": 16.67,
+  "Lover Games": 0,
+  "Lover Wins": 0,
+  "Lover Win %": 0,
+  "Total Tasks": 545.0,
+  "Tasks Completed": 225.0,
+  "Task Completion %": 41.28,
+  "All Tasks Completed": 8.0,
+  "Voted out": 13,
+  "Emergency Meetings": 5,
+  "Bodies Reported": 28,
+  "Voted out First": 9,
+  "First Death of Game": 8,
+  "Death in First Round": 11,
+  "Disconnected": 1,
+  "Rage Quit": 0,
+  "avatar": "pics/viz.jpg"
+
+},
+{
+  "Name": "DannyAarons",
+  "Games Played": 113,
+  "Wins": 50,
+  "Losses": 63,
+  "Win %": 44.25,
+  "Kills": 68,
+  "Deaths": 44,
+  "KDR": 1.55,
+  "Kills as Imposter": 65,
+  "Kills Per Imposter Game": 2.24,
+  "Imposter Games": 29,
+  "Imposter Wins": 12,
+  "Imposter Win %": 41.38,
+  "Crewmate Games": 77,
+  "Crewmate Wins": 37,
+  "Crewmate Win %": 48.05,
+  "Neutral Games": 7,
+  "Neutral Wins": 1,
+  "Neutral Win %": 14.29,
+  "Lover Games": 0,
+  "Lover Wins": 0,
+  "Lover Win %": 0,
+  "Total Tasks": 506.0,
+  "Tasks Completed": 100.0,
+  "Task Completion %": 19.76,
+  "All Tasks Completed": NaN,
+  "Voted out": 23,
+  "Emergency Meetings": 10,
+  "Bodies Reported": 31,
+  "Voted out First": 12,
+  "First Death of Game": 8,
+  "Death in First Round": 12,
+  "Disconnected": 1,
+  "Rage Quit": 0,
+  "avatar": "pics/danny.jpg"
+
+},
+        {
+            "Name": "Lachlan",
+            "Games Played": 97,
+            "Wins": 37,
+            "Losses": 60,
+            "Win %": 38.14,
+            "Kills": 46,
+            "Deaths": 50,
+            "KDR": 0.92,
+            "Kills as Imposter": 43,
+            "Kills Per Imposter Game": 1.95,
+            "Imposter Games": 22,
+            "Imposter Wins": 8,
+            "Imposter Win %": 36.36,
+            "Crewmate Games": 69,
+            "Crewmate Wins": 28,
+            "Crewmate Win %": 40.58,
+            "Neutral Games": 6,
+            "Neutral Wins": 1,
+            "Neutral Win %": 16.67,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 311.0,
+            "Tasks Completed": 97.0,
+            "Task Completion %": 31.19,
+            "All Tasks Completed": 4.0,
+            "Voted out": 16,
+            "Emergency Meetings": 8,
+            "Bodies Reported": 35,
+            "Voted out First": 5,
+            "First Death of Game": 7,
+            "Death in First Round": 8,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/lachlan.jpg"
+
+        },
+        {
+            "Name": "PieFace",
+            "Games Played": 55,
+            "Wins": 24,
+            "Losses": 31,
+            "Win %": 43.64,
+            "Kills": 26,
+            "Deaths": 31,
+            "KDR": 0.84,
+            "Kills as Imposter": 26,
+            "Kills Per Imposter Game": 2.17,
+            "Imposter Games": 12,
+            "Imposter Wins": 6,
+            "Imposter Win %": 50.0,
+            "Crewmate Games": 42,
+            "Crewmate Wins": 18,
+            "Crewmate Win %": 42.86,
+            "Neutral Games": 1,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 1,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 252.0,
+            "Tasks Completed": 181.0,
+            "Task Completion %": 71.83,
+            "All Tasks Completed": 15.0,
+            "Voted out": 9,
+            "Emergency Meetings": 4,
+            "Bodies Reported": 19,
+            "Voted out First": 2,
+            "First Death of Game": 10,
+            "Death in First Round": 9,
+            "Disconnected": 1,
+            "Rage Quit": 0,
+            "avatar": "pics/pie.jpg"
+
+        },
+        {
+            "Name": "Ellum",
+            "Games Played": 54,
+            "Wins": 26,
+            "Losses": 28,
+            "Win %": 48.15,
+            "Kills": 27,
+            "Deaths": 26,
+            "KDR": 1.04,
+            "Kills as Imposter": 27,
+            "Kills Per Imposter Game": 2.7,
+            "Imposter Games": 10,
+            "Imposter Wins": 4,
+            "Imposter Win %": 40.0,
+            "Crewmate Games": 44,
+            "Crewmate Wins": 22,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 195.0,
+            "Tasks Completed": 78.0,
+            "Task Completion %": 40.0,
+            "All Tasks Completed": 3.0,
+            "Voted out": 15,
+            "Emergency Meetings": 3,
+            "Bodies Reported": 11,
+            "Voted out First": 9,
+            "First Death of Game": 6,
+            "Death in First Round": 5,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/ellum.jpg"
+
+        },
+        {
+            "Name": "JME",
+            "Games Played": 35,
+            "Wins": 18,
+            "Losses": 17,
+            "Win %": 51.43,
+            "Kills": 32,
+            "Deaths": 18,
+            "KDR": 1.78,
+            "Kills as Imposter": 27,
+            "Kills Per Imposter Game": 2.25,
+            "Imposter Games": 12,
+            "Imposter Wins": 4,
+            "Imposter Win %": 33.33,
+            "Crewmate Games": 21,
+            "Crewmate Wins": 14,
+            "Crewmate Win %": 66.67,
+            "Neutral Games": 2,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 121.0,
+            "Tasks Completed": 51.0,
+            "Task Completion %": 42.15,
+            "All Tasks Completed": 2.0,
+            "Voted out": 8,
+            "Emergency Meetings": 11,
+            "Bodies Reported": 5,
+            "Voted out First": 1,
+            "First Death of Game": 3,
+            "Death in First Round": 3,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/jme.jpg"
+
+        },
+        {
+            "Name": "ChrisMD",
+            "Games Played": 34,
+            "Wins": 13,
+            "Losses": 21,
+            "Win %": 38.24,
+            "Kills": 13,
+            "Deaths": 13,
+            "KDR": 1.0,
+            "Kills as Imposter": 13,
+            "Kills Per Imposter Game": 4.33,
+            "Imposter Games": 3,
+            "Imposter Wins": 1,
+            "Imposter Win %": 33.33,
+            "Crewmate Games": 31,
+            "Crewmate Wins": 12,
+            "Crewmate Win %": 38.71,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 155.0,
+            "Tasks Completed": 29.0,
+            "Task Completion %": 18.71,
+            "All Tasks Completed": NaN,
+            "Voted out": 7,
+            "Emergency Meetings": 4,
+            "Bodies Reported": 6,
+            "Voted out First": 3,
+            "First Death of Game": 4,
+            "Death in First Round": 4,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/chris.jpg"
+
+        },
+        {
+            "Name": "Ginge",
+            "Games Played": 34,
+            "Wins": 9,
+            "Losses": 25,
+            "Win %": 26.47,
+            "Kills": 15,
+            "Deaths": 18,
+            "KDR": 0.83,
+            "Kills as Imposter": 10,
+            "Kills Per Imposter Game": 1.43,
+            "Imposter Games": 7,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 22,
+            "Crewmate Wins": 8,
+            "Crewmate Win %": 36.36,
+            "Neutral Games": 5,
+            "Neutral Wins": 1,
+            "Neutral Win %": 20.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 157.0,
+            "Tasks Completed": 80.0,
+            "Task Completion %": 50.96,
+            "All Tasks Completed": 4.0,
+            "Voted out": 6,
+            "Emergency Meetings": 6,
+            "Bodies Reported": 9,
+            "Voted out First": 5,
+            "First Death of Game": 4,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/ginge.jpg"
+
+        },
+        {
+            "Name": "Callux",
+            "Games Played": 21,
+            "Wins": 10,
+            "Losses": 11,
+            "Win %": 47.62,
+            "Kills": 4,
+            "Deaths": 14,
+            "KDR": 0.29,
+            "Kills as Imposter": 3,
+            "Kills Per Imposter Game": 3.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 18,
+            "Crewmate Wins": 7,
+            "Crewmate Win %": 38.89,
+            "Neutral Games": 2,
+            "Neutral Wins": 2,
+            "Neutral Win %": 100.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 77.0,
+            "Tasks Completed": 21.0,
+            "Task Completion %": 27.27,
+            "All Tasks Completed": NaN,
+            "Voted out": 3,
+            "Emergency Meetings": 2,
+            "Bodies Reported": 3,
+            "Voted out First": 2,
+            "First Death of Game": 3,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/callux.jpg"
+
+        },
+        {
+            "Name": "Calfreezy",
+            "Games Played": 20,
+            "Wins": 6,
+            "Losses": 14,
+            "Win %": 30.0,
+            "Kills": 9,
+            "Deaths": 8,
+            "KDR": 1.13,
+            "Kills as Imposter": 8,
+            "Kills Per Imposter Game": 1.6,
+            "Imposter Games": 5,
+            "Imposter Wins": 1,
+            "Imposter Win %": 20.0,
+            "Crewmate Games": 15,
+            "Crewmate Wins": 5,
+            "Crewmate Win %": 33.33,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 56.0,
+            "Tasks Completed": 7.0,
+            "Task Completion %": 12.5,
+            "All Tasks Completed": NaN,
+            "Voted out": 4,
+            "Emergency Meetings": 4,
+            "Bodies Reported": 5,
+            "Voted out First": 2,
+            "First Death of Game": 2,
+            "Death in First Round": 1,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/freezy.jpg"
+
+        },
+        {
+            "Name": "MilkInABag",
+            "Games Played": 15,
+            "Wins": 10,
+            "Losses": 5,
+            "Win %": 66.67,
+            "Kills": 9,
+            "Deaths": 7,
+            "KDR": 1.29,
+            "Kills as Imposter": 9,
+            "Kills Per Imposter Game": 3.0,
+            "Imposter Games": 3,
+            "Imposter Wins": 3,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 12,
+            "Crewmate Wins": 7,
+            "Crewmate Win %": 58.33,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 35.0,
+            "Tasks Completed": 20.0,
+            "Task Completion %": 57.14,
+            "All Tasks Completed": 1.0,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 4,
+            "Voted out First": 0,
+            "First Death of Game": 2,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/milk.jpg"
+
+        },
+        {
+            "Name": "WillNE",
+            "Games Played": 15,
+            "Wins": 7,
+            "Losses": 8,
+            "Win %": 46.67,
+            "Kills": 3,
+            "Deaths": 2,
+            "KDR": 1.5,
+            "Kills as Imposter": 3,
+            "Kills Per Imposter Game": 3.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 14,
+            "Crewmate Wins": 7,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 49.0,
+            "Tasks Completed": 26.0,
+            "Task Completion %": 53.06,
+            "All Tasks Completed": 2.0,
+            "Voted out": 7,
+            "Emergency Meetings": 1,
+            "Bodies Reported": 1,
+            "Voted out First": 2,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/willne.jpg"
+
+        },
+        {
+            "Name": "ArthurTV",
+            "Games Played": 12,
+            "Wins": 5,
+            "Losses": 7,
+            "Win %": 41.67,
+            "Kills": 4,
+            "Deaths": 5,
+            "KDR": 0.8,
+            "Kills as Imposter": 4,
+            "Kills Per Imposter Game": 2.0,
+            "Imposter Games": 2,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 10,
+            "Crewmate Wins": 5,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 66.0,
+            "Tasks Completed": 25.0,
+            "Task Completion %": 37.88,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 3,
+            "Bodies Reported": 1,
+            "Voted out First": 1,
+            "First Death of Game": 2,
+            "Death in First Round": 4,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/arthur.jpg"
+
+        },
+        {
+            "Name": "George Clarkey",
+            "Games Played": 12,
+            "Wins": 2,
+            "Losses": 10,
+            "Win %": 16.67,
+            "Kills": 6,
+            "Deaths": 6,
+            "KDR": 1.0,
+            "Kills as Imposter": 5,
+            "Kills Per Imposter Game": 1.25,
+            "Imposter Games": 4,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 6,
+            "Crewmate Wins": 2,
+            "Crewmate Win %": 33.33,
+            "Neutral Games": 2,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 44.0,
+            "Tasks Completed": 4.0,
+            "Task Completion %": 9.09,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 3,
+            "Voted out First": 1,
+            "First Death of Game": 1,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/clarkey.jpg"
+
+        },
+        {
+            "Name": "MaxFosh",
+            "Games Played": 12,
+            "Wins": 6,
+            "Losses": 7,
+            "Win %": 50.0,
+            "Kills": 10,
+            "Deaths": 7,
+            "KDR": 1.43,
+            "Kills as Imposter": 10,
+            "Kills Per Imposter Game": 2.5,
+            "Imposter Games": 4,
+            "Imposter Wins": 1,
+            "Imposter Win %": 25.0,
+            "Crewmate Games": 8,
+            "Crewmate Wins": 4,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 2,
+            "Lover Wins": 1,
+            "Lover Win %": 50,
+            "Total Tasks": 60.0,
+            "Tasks Completed": 35.0,
+            "Task Completion %": 58.33,
+            "All Tasks Completed": 1.0,
+            "Voted out": 2,
+            "Emergency Meetings": 3,
+            "Bodies Reported": 3,
+            "Voted out First": 2,
+            "First Death of Game": 1,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/maxfosh.jpg"
+
+        },
+        {
+            "Name": "Fresh",
+            "Games Played": 10,
+            "Wins": 4,
+            "Losses": 6,
+            "Win %": 40.0,
+            "Kills": 4,
+            "Deaths": 3,
+            "KDR": 1.33,
+            "Kills as Imposter": 4,
+            "Kills Per Imposter Game": 4.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 9,
+            "Crewmate Wins": 3,
+            "Crewmate Win %": 33.33,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 2,
+            "Emergency Meetings": 1,
+            "Bodies Reported": 4,
+            "Voted out First": 0,
+            "First Death of Game": 2,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/fresh.jpg"
+
+        },
+        {
+            "Name": "Ciaran",
+            "Games Played": 9,
+            "Wins": 5,
+            "Losses": 4,
+            "Win %": 55.56,
+            "Kills": 0,
+            "Deaths": 6,
+            "KDR": 0.0,
+            "Kills as Imposter": 0,
+            "Kills Per Imposter Game": 0.0,
+            "Imposter Games": 0,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 8,
+            "Crewmate Wins": 5,
+            "Crewmate Win %": 62.5,
+            "Neutral Games": 1,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 56.0,
+            "Tasks Completed": 24.0,
+            "Task Completion %": 42.86,
+            "All Tasks Completed": 1.0,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 0,
+            "Voted out First": 0,
+            "First Death of Game": 2,
+            "Death in First Round": 2,
+            "Disconnected": 1,
+            "Rage Quit": 0,
+            "avatar": "pics/ciaran.jpg"
+
+        },
+        {
+            "Name": "Muselk",
+            "Games Played": 9,
+            "Wins": 6,
+            "Losses": 3,
+            "Win %": 66.67,
+            "Kills": 3,
+            "Deaths": 4,
+            "KDR": 0.75,
+            "Kills as Imposter": 3,
+            "Kills Per Imposter Game": 3.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 8,
+            "Crewmate Wins": 5,
+            "Crewmate Win %": 62.5,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 4,
+            "Voted out First": 1,
+            "First Death of Game": 1,
+            "Death in First Round": 1,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/muselk.jpg"
+
+        },
+        {
+            "Name": "Joe Weller",
+            "Games Played": 8,
+            "Wins": 7,
+            "Losses": 1,
+            "Win %": 87.5,
+            "Kills": 2,
+            "Deaths": 3,
+            "KDR": 0.67,
+            "Kills as Imposter": 2,
+            "Kills Per Imposter Game": 2.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 7,
+            "Crewmate Wins": 6,
+            "Crewmate Win %": 85.71,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 56.0,
+            "Tasks Completed": 9.0,
+            "Task Completion %": 16.07,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 1,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/weller.jpg"
+
+        },
+        {
+            "Name": "Theo",
+            "Games Played": 8,
+            "Wins": 3,
+            "Losses": 5,
+            "Win %": 37.5,
+            "Kills": 3,
+            "Deaths": 5,
+            "KDR": 0.6,
+            "Kills as Imposter": 3,
+            "Kills Per Imposter Game": 3.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 7,
+            "Crewmate Wins": 2,
+            "Crewmate Win %": 28.57,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 0,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/theo.jpg"
+
+        },
+        {
+            "Name": "TommyInnit",
+            "Games Played": 8,
+            "Wins": 2,
+            "Losses": 6,
+            "Win %": 25.0,
+            "Kills": 6,
+            "Deaths": 1,
+            "KDR": 6.0,
+            "Kills as Imposter": 6,
+            "Kills Per Imposter Game": 2.0,
+            "Imposter Games": 3,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 5,
+            "Crewmate Wins": 2,
+            "Crewmate Win %": 40.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 4,
+            "Emergency Meetings": 1,
+            "Bodies Reported": 2,
+            "Voted out First": 1,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 1,
+            "Rage Quit": 0,
+            "avatar": "pics/tommy.jpg"
+
+        },
+        {
+            "Name": "Tubbo",
+            "Games Played": 8,
+            "Wins": 6,
+            "Losses": 2,
+            "Win %": 75.0,
+            "Kills": 2,
+            "Deaths": 3,
+            "KDR": 0.67,
+            "Kills as Imposter": 2,
+            "Kills Per Imposter Game": 2.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 7,
+            "Crewmate Wins": 5,
+            "Crewmate Win %": 71.43,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 2,
+            "Bodies Reported": 1,
+            "Voted out First": 0,
+            "First Death of Game": 1,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/tubbo.jpg"
+
+        },
+        {
+            "Name": "Wilbur",
+            "Games Played": 8,
+            "Wins": 3,
+            "Losses": 5,
+            "Win %": 37.5,
+            "Kills": 1,
+            "Deaths": 3,
+            "KDR": 0.33,
+            "Kills as Imposter": 1,
+            "Kills Per Imposter Game": 0.5,
+            "Imposter Games": 2,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 6,
+            "Crewmate Wins": 3,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 3,
+            "Emergency Meetings": 1,
+            "Bodies Reported": 1,
+            "Voted out First": 1,
+            "First Death of Game": 1,
+            "Death in First Round": 1,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/wilbur.jpg"
+
+        },
+        {
+            "Name": "Apex",
+            "Games Played": 7,
+            "Wins": 2,
+            "Losses": 5,
+            "Win %": 28.57,
+            "Kills": 2,
+            "Deaths": 3,
+            "KDR": 0.67,
+            "Kills as Imposter": 2,
+            "Kills Per Imposter Game": 2.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 6,
+            "Crewmate Wins": 2,
+            "Crewmate Win %": 33.33,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 3,
+            "Voted out First": 0,
+            "First Death of Game": 2,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/apex.jpg"
+
+        },
+        {
+            "Name": "Jarvis",
+            "Games Played": 7,
+            "Wins": 2,
+            "Losses": 5,
+            "Win %": 28.57,
+            "Kills": 1,
+            "Deaths": 6,
+            "KDR": 0.17,
+            "Kills as Imposter": 1,
+            "Kills Per Imposter Game": 1.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 6,
+            "Crewmate Wins": 2,
+            "Crewmate Win %": 33.33,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 0,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/jarvis.jpg"
+
+        },
+        {
+            "Name": "Jynxzi",
+            "Games Played": 7,
+            "Wins": 0,
+            "Losses": 7,
+            "Win %": 0.0,
+            "Kills": 2,
+            "Deaths": 5,
+            "KDR": 0.4,
+            "Kills as Imposter": 2,
+            "Kills Per Imposter Game": 1.0,
+            "Imposter Games": 2,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 1,
+            "Crewmate Wins": 0,
+            "Crewmate Win %": 0.0,
+            "Neutral Games": 4,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 7.0,
+            "Tasks Completed": 0.0,
+            "Task Completion %": 0.0,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 4,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 1,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/jynxzi.jpg"
+
+        },
+        {
+            "Name": "Kay",
+            "Games Played": 7,
+            "Wins": 5,
+            "Losses": 2,
+            "Win %": 71.43,
+            "Kills": 5,
+            "Deaths": 1,
+            "KDR": 5.0,
+            "Kills as Imposter": 5,
+            "Kills Per Imposter Game": 2.5,
+            "Imposter Games": 2,
+            "Imposter Wins": 2,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 5,
+            "Crewmate Wins": 3,
+            "Crewmate Win %": 60.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 1,
+            "Voted out First": 0,
+            "First Death of Game": 1,
+            "Death in First Round": 1,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/kay.jpg"
+
+        },
+                {
+            "Name": "Chandler",
+            "Games Played": 6,
+            "Wins": 4,
+            "Losses": 2,
+            "Win %": 66.67,
+            "Kills": 1,
+            "Deaths": 1,
+            "KDR": 1.0,
+            "Kills as Imposter": 1,
+            "Kills Per Imposter Game": 1.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 5,
+            "Crewmate Wins": 3,
+            "Crewmate Win %": 60.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 4,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/chandler.jpg"
+
+        },
+        {
+            "Name": "Chip",
+            "Games Played": 6,
+            "Wins": 3,
+            "Losses": 3,
+            "Win %": 50.0,
+            "Kills": 0,
+            "Deaths": 4,
+            "KDR": 0.0,
+            "Kills as Imposter": 0,
+            "Kills Per Imposter Game": 0.0,
+            "Imposter Games": 0,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 6,
+            "Crewmate Wins": 3,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 42.0,
+            "Tasks Completed": 12.0,
+            "Task Completion %": 28.57,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 1,
+            "Bodies Reported": 2,
+            "Voted out First": 0,
+            "First Death of Game": 1,
+            "Death in First Round": 1,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/chip.jpg"
+
+        },
+        {
+            "Name": "Karl",
+            "Games Played": 6,
+            "Wins": 3,
+            "Losses": 3,
+            "Win %": 50.0,
+            "Kills": 0,
+            "Deaths": 1,
+            "KDR": 0.0,
+            "Kills as Imposter": 0,
+            "Kills Per Imposter Game": 0.0,
+            "Imposter Games": 0,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 6,
+            "Crewmate Wins": 3,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 2,
+            "Emergency Meetings": 1,
+            "Bodies Reported": 5,
+            "Voted out First": 1,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/karl.jpg"
+
+        },
+        {
+            "Name": "Liam",
+            "Games Played": 6,
+            "Wins": 3,
+            "Losses": 3,
+            "Win %": 50.0,
+            "Kills": 0,
+            "Deaths": 3,
+            "KDR": 0.0,
+            "Kills as Imposter": 0,
+            "Kills Per Imposter Game": 0.0,
+            "Imposter Games": 0,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 6,
+            "Crewmate Wins": 3,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 3,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/liam.jpg"
+
+        },
+        {
+            "Name": "MrBeast",
+            "Games Played": 6,
+            "Wins": 3,
+            "Losses": 3,
+            "Win %": 50.0,
+            "Kills": 4,
+            "Deaths": 0,
+            "KDR": 4.0,
+            "Kills as Imposter": 4,
+            "Kills Per Imposter Game": 2.0,
+            "Imposter Games": 2,
+            "Imposter Wins": 1,
+            "Imposter Win %": 50.0,
+            "Crewmate Games": 4,
+            "Crewmate Wins": 2,
+            "Crewmate Win %": 50.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 1,
+            "Emergency Meetings": 2,
+            "Bodies Reported": 1,
+            "Voted out First": 1,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/mrbeast.jpg"
+
+        },
+        {
+            "Name": "Dream",
+            "Games Played": 5,
+            "Wins": 4,
+            "Losses": 1,
+            "Win %": 80.0,
+            "Kills": 0,
+            "Deaths": 3,
+            "KDR": 0.0,
+            "Kills as Imposter": 0,
+            "Kills Per Imposter Game": 0.0,
+            "Imposter Games": 0,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 5,
+            "Crewmate Wins": 4,
+            "Crewmate Win %": 80.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 2,
+            "Bodies Reported": 3,
+            "Voted out First": 0,
+            "First Death of Game": 2,
+            "Death in First Round": 2,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/dream.jpg"
+
+        },
+        {
+            "Name": "JackSepticEye",
+            "Games Played": 5,
+            "Wins": 5,
+            "Losses": 0,
+            "Win %": 100.0,
+            "Kills": 3,
+            "Deaths": 0,
+            "KDR": 3.0,
+            "Kills as Imposter": 3,
+            "Kills Per Imposter Game": 3.0,
+            "Imposter Games": 1,
+            "Imposter Wins": 1,
+            "Imposter Win %": 100.0,
+            "Crewmate Games": 4,
+            "Crewmate Wins": 4,
+            "Crewmate Win %": 100.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 1,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/jack.jpg"
+
+        },
+        {
+            "Name": "Pewdiepie",
+            "Games Played": 5,
+            "Wins": 4,
+            "Losses": 1,
+            "Win %": 80.0,
+            "Kills": 0,
+            "Deaths": 2,
+            "KDR": 0.0,
+            "Kills as Imposter": 0,
+            "Kills Per Imposter Game": 0.0,
+            "Imposter Games": 0,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 5,
+            "Crewmate Wins": 4,
+            "Crewmate Win %": 80.0,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": NaN,
+            "Tasks Completed": NaN,
+            "Task Completion %": NaN,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 2,
+            "Bodies Reported": 2,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/pew.jpg"
+
+        },
+        {
+            "Name": "Finn",
+            "Games Played": 3,
+            "Wins": 1,
+            "Losses": 2,
+            "Win %": 33.33,
+            "Kills": 0,
+            "Deaths": 1,
+            "KDR": 0.0,
+            "Kills as Imposter": 0,
+            "Kills Per Imposter Game": 0.0,
+            "Imposter Games": 0,
+            "Imposter Wins": 0,
+            "Imposter Win %": 0.0,
+            "Crewmate Games": 3,
+            "Crewmate Wins": 1,
+            "Crewmate Win %": 33.33,
+            "Neutral Games": 0,
+            "Neutral Wins": 0,
+            "Neutral Win %": 0.0,
+            "Lover Games": 0,
+            "Lover Wins": 0,
+            "Lover Win %": 0,
+            "Total Tasks": 21.0,
+            "Tasks Completed": 5.0,
+            "Task Completion %": 23.81,
+            "All Tasks Completed": NaN,
+            "Voted out": 0,
+            "Emergency Meetings": 0,
+            "Bodies Reported": 1,
+            "Voted out First": 0,
+            "First Death of Game": 0,
+            "Death in First Round": 0,
+            "Disconnected": 0,
+            "Rage Quit": 0,
+            "avatar": "pics/finn.jpg"
+
+        }
+
+       // Add more players as needed
+        ];
+
+        function renderPlayers(players) {
+            const grid = document.getElementById('playersGrid');
+            
+            players.forEach(player => {
+                const card = document.createElement('div');
+                card.className = 'player-card fade-in';
+                card.onclick = () => showPlayerDetails(player);
+                
+                const winRate = ((player.Wins / player["Games Played"]) * 100).toFixed(1);
+                const kdr = player.KDR.toFixed(2);
+                
+                card.innerHTML = `
+                    <div class="player-header">
+                        <div class="player-avatar">
+                         <img src="${player.avatar}" alt="${player.Name}'s Avatar" style="width: 100%; height: 100%; border-radius: 50%;">
+
+                        </div>
+                        <h2>${player.Name}</h2>
+                    </div>
+                    <div class="player-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">
+                                <i class='bx bxs-trophy icon'></i>Win Rate
+                            </span>
+                            <span class="stat-value">${winRate}%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">
+                                <i class='bx bxs-knife icon'></i>KDR
+                            </span>
+                            <span class="stat-value">${kdr}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">
+                                <i class='bx bx-game icon'></i>Games
+                            </span>
+                            <span class="stat-value">${player["Games Played"]}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">
+                                <i class='bx bxs-skull icon'></i>Kills
+                            </span>
+                            <span class="stat-value">${player.Kills}</span>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function showPlayerDetails(player) {
+            const modal = document.getElementById('playerModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <h2 style="font-size: 2rem; margin-bottom: 1.5rem;">${player.Name}'s Statistics</h2>
+                
+                <div class="role-stats">
+                    <div class="role-title">
+                        <i class='bx bxs-ghost' style="color: var(--danger)"></i>
+                        Imposter Performance
+                    </div>
+                    <div class="stats-detail">
+                        <div class="stat-item">
+                            <span class="stat-label">Games as Imposter</span>
+                            <span class="stat-value">${player["Imposter Games"]}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Imposter Win Rate</span>
+                            <span class="stat-value">${player["Imposter Win %"]}%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Kills per Game</span>
+                            <span class="stat-value">${player["Kills Per Imposter Game"]}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="role-stats">
+                    <div class="role-title">
+                        <i class='bx bx-user' style="color: var(--success)"></i>
+                        Crewmate Performance
+                    </div>
+                    <div class="stats-detail">
+                        <div class="stat-item">
+                            <span class="stat-label">Games as Crewmate</span>
+                            <span class="stat-value">${player["Crewmate Games"]}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Crewmate Win Rate</span>
+                            <span class="stat-value">${player["Crewmate Win %"]}%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Task Completion</span>
+                            <span class="stat-value">${player["Task Completion %"]}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kill-stats">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">Activity Metrics</h3>
+                    <div style="display: grid; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span class="stat-label">
+                                    <i class='bx bx-search icon'></i>
+                                    Bodies Reported
+                                </span>
+                                <span>${player["Bodies Reported"]}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${(player["Bodies Reported"] / 100) * 100}%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span class="stat-label">
+                                    <i class='bx bx-bell icon'></i>
+                                    Emergency Meetings
+                                </span>
+                                <span>${player["Emergency Meetings"]}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${(player["Emergency Meetings"] / 50) * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+            
+            // Animate progress bars
+            anime({
+                targets: '.progress-fill',
+                width: function(el) {
+                    return el.style.width;
+                },
+                easing: 'easeInOutQuad',
+                duration: 1000,
+  delay: anime.stagger(200)
+});
+}
+
+// Close modal functionality
+document.querySelector('.close-btn').addEventListener('click', () => {
+  document.getElementById('playerModal').style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('playerModal');
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+
+// Start rendering when page loads
+renderPlayers(playerData);
+
+// Add card hover animations
+document.querySelectorAll('.player-card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    anime({
+      targets: card,
+      translateY: -10,
+      duration: 300,
+      easing: 'easeOutQuad'
+    });
+  });
+
+  card.addEventListener('mouseleave', () => {
+    anime({
+      targets: card,
+      translateY: 0,
+      duration: 300,
+      easing: 'easeOutQuad'
+    });
+  });
+});
+</script> 
+</body> 
+</html>
